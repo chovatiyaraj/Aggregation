@@ -1,0 +1,122 @@
+<script>
+
+    $('#partyTable').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "lengthMenu": [[10, 25, 50, 100, 500], [10, 25, 50, 100, 500]],
+        "searching": true,
+        "sort": true,
+        "ajax": {
+            "url": "/api/party_data",
+            "type": "POST",
+            "dataSrc": function(json) {
+                console.log("Data received from server:", json);
+                // Modify the plan_collections field to show plan name - amount
+                json.aaData.forEach(function(row) {
+                    <!-- console.log("::->",row) -->
+                    let planCollections = [];
+                    row.plan_collections.forEach(function(plan) {
+                        planCollections.push(plan.plan + ' - ' + plan.amount);
+                    });
+                    row.plan_collections = planCollections.join(', ');
+                });
+                return json.aaData;
+            }
+        },
+        "columns": [
+            { "data": "party_name"},
+            { "data": "mobile_no"},
+            { "data": "plans"},
+            { "data": "collection_amount"},
+            { "data": "withdraw_amount"},
+            { "data": "total_investment"},
+            { "data": "plan_collections"}
+        ],
+        orderCellsTop: true,
+        columnDefs: [
+        { orderable: true,  targets: [0, 3,4] },
+        { orderable: false, targets: [1,2,5] },
+        { orderable: false, targets: '_all' }
+        ],
+        "order": [[0, "asc"]],
+
+        initComplete: function () {
+            var api = this.api();
+            // For each column
+
+            $('#plan_list').on('change', function (e) {
+                var regexr = '{search}';
+                console.log("This value ::->",this,this.value)
+                console.log("Event Is ::->",e)
+                api
+                    .column(2)
+                    .search(
+                        this.value != ''
+                            ? regexr.replace('{search}', this.value) : '',
+                        this.value != '',
+                        this.value == ''
+                    )
+                    .draw();
+            })
+
+
+            api
+                .columns()
+                .eq(0)
+                .each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    // var title = $(cell).text();
+                    // $(cell).html('<input type="text"  placeholder="' + title + '" />');
+
+                    // On every keypress in this input
+                    $(
+                        'input',
+                        $('.filters th').eq($(api.column(colIdx).header()).index())
+                    )
+                        .off('keyup change')
+                        .on('change', function (e) {
+                            // Get the search value
+                            $(this).attr('title', $(this).val());
+                            var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+                            var cursorPosition = this.selectionStart;
+                            // Search the column for that value
+                            api
+                                .column(colIdx)
+                                .search(
+                                    this.value != ''
+                                        ? regexr.replace('{search}', this.value)
+                                        : '',
+                                    this.value != '',
+                                    this.value == ''
+                                )
+                                .draw();
+                        })
+                        .on('keyup', function (e) {
+                            e.stopPropagation();
+                            $(this).trigger('change');
+                            $(this)
+                                .focus()[0]
+                            // .setSelectionRange(cursorPosition, cursorPosition);
+                        });
+                });
+
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+    });
+
+</script>

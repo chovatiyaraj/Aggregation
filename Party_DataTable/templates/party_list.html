@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product DataTable</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
+    <style>
+        .product-image {
+            width: 60px;
+            height: auto;
+        }
+        .btn-custom {
+            font-size: 13px;
+            padding: 5px 10px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Party List</h2>
+        <table id="partyTable" class="display table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Party Name</th>
+                    <th>Mobile</th>
+                    <th>Plan</th>
+                    <th>Collection</th>
+                    <th>Withdraw</th>
+                    <th>Total Investment</th>
+                    <th>Plan Collections</th>
+                </tr>
+            </thead>
+
+            <thead class="filters display">
+                <tr>
+                    <th scope="col" class="align-middle " style="text-align: center;">
+                        <input class="form-control" type="text"
+                            placeholder="Party Name" />
+                    </th>
+                    <th scope="col" class="align-middle " style="text-align: center;">
+                        <input class="form-control" type="text"
+                            placeholder="Mobile No.." />
+                    </th>
+
+
+                    <th scope="col" class="align-middle " style="text-align: center;">
+                        <select class="form-select select2" data-toggle="select2"
+                            id="plan_list">
+                            <option value="" > - </option>
+                            {% for plan in plans %}
+                            <option value="{{plan['_id']}}"> {{plan["plan_name"]}} - {{plan['plan_type']}} </option>
+                            {% endfor %}
+                        </select>
+                    </th>
+
+
+                    <th scope="col" class="align-middle " style="text-align: center;">
+                        &nbsp;</th>
+                    <th scope="col" class="align-middle " style="text-align: center;">
+                        &nbsp;</th>
+                    <th scope="col" class="align-middle " style="text-align: center;">
+                        &nbsp;</th>
+                    <th scope="col" class="align-middle " style="text-align: center;">
+                        &nbsp;
+                    </th>
+                </tr>
+            </thead>
+
+            
+            <tbody>
+                <!-- Data will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+ 
+    <!-- Ensure jQuery is loaded first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
+    
+    
+    {% include "party_list_js.html" %}
+    
+</body>
+
